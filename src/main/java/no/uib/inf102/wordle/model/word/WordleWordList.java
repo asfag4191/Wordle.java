@@ -2,7 +2,10 @@ package no.uib.inf102.wordle.model.word;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import no.uib.inf102.wordle.model.Dictionary;
 
@@ -96,4 +99,78 @@ public class WordleWordList {
 		return allWords.WORD_LENGTH;
 	}
 
+/**
+ * Returns the best possible word, given the answer.
+ */
+public String bestWord() {
+    List<HashMap<Character, Integer>> bestFrequency = bestFrequency(possibleAnswers);
+    String bestWord = "";
+    int maxCount = -1;
+
+    // Find the word with the highest frequency of characters
+    for (String word : possibleAnswers) {
+        int tempCount = 0;
+
+        for (int i = 0; i < wordLength(); i++) {
+            char c = word.charAt(i);
+            if (bestFrequency.get(i).containsKey(c)) {
+				tempCount += bestFrequency.get(i).get(c);
+			} else {
+				tempCount += 0;
+			}
+
+        }
+
+        // Update the best word if this word has a higher score
+        if (tempCount > maxCount) {
+            maxCount = tempCount;
+            bestWord = word;
+        }
+    }
+
+    return bestWord;
 }
+
+	 //count the number of possible words for each character
+	 // holder oversikt over hvor mange ganger hver bokstav forekommer i hver posisjon
+	 private List<HashMap<Character, Integer>> bestFrequency(List<String> possibleAnswers){
+		List<HashMap<Character, Integer>> bestFrequency= new ArrayList<>();
+
+		for (int i = 0; i < wordLength(); i++) {
+			bestFrequency.add(new HashMap<>());
+		}
+
+		for(String word: possibleAnswers){
+			for (int i = 0; i < wordLength(); i++) {
+				char c = word.charAt(i);
+				if (bestFrequency.get(i).containsKey(c)){
+					bestFrequency.get(i).put(c, bestFrequency.get(i).get(c)+1);
+				}else{
+					bestFrequency.get(i).put(c, 1);
+				}
+			}
+		}
+
+		return bestFrequency;
+	 }
+
+	 //return true if it's all different characters in the word
+	 public boolean allDifferent(String word){
+		Set<Character> set = new HashSet<>();
+		for (int i = 0; i < word.length(); i++) {
+			char c = word.charAt(i); //O(1)
+			if (set.contains(c)) { //O(1)
+				return false;
+			} else {
+				set.add(c); //O(1)
+			}
+		}
+
+		return true;
+	}
+	
+
+
+	}
+	 
+

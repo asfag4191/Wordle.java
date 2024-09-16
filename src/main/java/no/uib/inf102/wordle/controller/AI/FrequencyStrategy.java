@@ -19,10 +19,13 @@ public class FrequencyStrategy implements IStrategy {
         reset();
     }
 
+
     @Override
     public String makeGuess(WordleWord feedback) {
-        // TODO: Implement me :)
-        return "";
+        if (feedback != null) {
+            guesses.eliminateWords(feedback);
+        }
+        return guesses.bestWord();
     }
 
 
