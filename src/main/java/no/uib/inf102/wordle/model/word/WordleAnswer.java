@@ -1,9 +1,12 @@
 package no.uib.inf102.wordle.model.word;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import no.uib.inf102.wordle.model.Dictionary;
+
 
 /**
  * This class represents an answer to a Wordle puzzle.
@@ -91,11 +94,37 @@ public class WordleAnswer {
 
         // TODO: Implement me :)
 
+        char [] ans = answer.toCharArray();
+        char [] guess_= guess.toCharArray();
+        Map<Character, Integer> map = new HashMap<>();
+
         AnswerType[] feedback = new AnswerType[wordLength];
+
+        //builds the map of how many times each character appears in the answer
+        for (char c: ans){
+            if (map.containsKey(c)){
+                map.put(c, map.get(c)+1); //increment if already in map
+            }else{
+                map.put(c, 1); //add if not in map
+        }
+    }
         for (int i = 0; i < wordLength; i++) {
             feedback[i] = AnswerType.WRONG;
+            if (ans[i] == guess_[i]) {
+                feedback[i] = AnswerType.CORRECT;
+                map.put(ans[i], map.get(ans[i]) - 1); //decrement the count of the character in the answer.
+            }else{                                    //decrement to not count the same character again.
+                feedback[i] = AnswerType.WRONG; //if the character is not in the answer
+            }
         }
+        //if the character is in the answer but not in the correct position
+        for (int i = 0; i < wordLength; i++) { 
+            if (feedback[i] == AnswerType.WRONG && map.containsKey(guess_[i]) && map.get(guess_[i]) > 0) { //if the character is in the answer but not in the correct position.
+                feedback[i] = AnswerType.MISPLACED; 
+                map.put(guess_[i], map.get(guess_[i]) - 1); 
 
-        return new WordleWord(guess,feedback);
+            }
+        }
+        return new WordleWord(guess, feedback);
     }
 }
