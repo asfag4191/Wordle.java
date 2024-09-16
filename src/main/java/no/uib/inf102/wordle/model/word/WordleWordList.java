@@ -2,9 +2,7 @@ package no.uib.inf102.wordle.model.word;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import no.uib.inf102.wordle.model.Dictionary;
 
@@ -58,10 +56,17 @@ public class WordleWordList {
 	 * Eliminates words from the possible answers list using the given
 	 * <code>feedback</code>
 	 * 
-	 * @param feedback
+	 * @param feedback the feedback to eliminate words with. 
 	 */
 	public void eliminateWords(WordleWord feedback) {
-		// TODO: Implement me :)
+		List<String> newPossibleAnswer=new ArrayList<>(size());
+
+		for (String word : possibleAnswers){ 
+			if (WordleWord.isPossibleWord(word,feedback)){
+				newPossibleAnswer.add(word);
+			}
+			possibleAnswers=newPossibleAnswer; //update the possible answers
+		}
 	}
 
 	/**
