@@ -131,4 +131,8 @@ public class WordleWord implements Iterable<WordleCharacter> {
         return Objects.equals(word, other.word);
     }
 
-}
+    //for AI
+    
+    }
+
+

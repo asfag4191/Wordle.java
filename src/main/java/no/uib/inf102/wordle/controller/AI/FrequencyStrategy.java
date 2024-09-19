@@ -1,5 +1,9 @@
 package no.uib.inf102.wordle.controller.AI;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import no.uib.inf102.wordle.model.Dictionary;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.model.word.WordleWordList;
@@ -13,6 +17,8 @@ public class FrequencyStrategy implements IStrategy {
 
     private Dictionary dictionary;
     private WordleWordList guesses;
+    private List<String> possibleAnswers;
+
 
     public FrequencyStrategy(Dictionary dictionary) {
         this.dictionary = dictionary;
@@ -33,4 +39,6 @@ public class FrequencyStrategy implements IStrategy {
     public void reset() {
         guesses = new WordleWordList(dictionary);
     }
+
+    
 }

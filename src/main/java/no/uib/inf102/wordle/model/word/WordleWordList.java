@@ -133,7 +133,7 @@ public class WordleWordList {
 
     //count the number of possible words for each character
     // holder oversikt over hvor mange ganger hver bokstav forekommer i hver posisjon
-    private List<HashMap<Character, Integer>> bestFrequency(List<String> possibleAnswers) {
+    public List<HashMap<Character, Integer>> bestFrequency(List<String> possibleAnswers) {
         List<HashMap<Character, Integer>> bestFrequency = new ArrayList<>();
 
         for (int i = 0; i < wordLength(); i++) {
@@ -155,50 +155,44 @@ public class WordleWordList {
     }
 
     //koder til min Ai
+
+
     //return true if it's all different characters in the word
-	//*
+	public boolean allDifferent(String word) {
+		Set<Character> charSet = new HashSet<>(); 
 	
-    //public boolean allDifferent(String word) {
-        //Set<Character> set = new HashSet<>();
-        //for (int i = 0; i < word.length(); i++) {
-            //char c = word.charAt(i); //O(1)
-            //if (set.contains(c)) { //O(1)
-                //return false;
-            //} else {
-                //set.add(c); //O(1)
-            //}
-       // }
-
-        //return true;
-    //}
-	
-    // Finn det første ordet med alle forskjellige bokstaver
-
-	public String findFirstOptimized() {
-		List<HashMap<Character, Integer>> bestFrequency = bestFrequency(possibleAnswers);
-		String bestWord = "";
-		int maxScore = -1;
-	
-		for (String word : possibleAnswers) {
-			int tempScore = 0;
-			Set<Character> uniqueChars = new HashSet<>();
-	
-			for (int i = 0; i < wordLength(); i++) {
-				char c = word.charAt(i);
-				tempScore += bestFrequency.get(i).getOrDefault(c, 0);
-				uniqueChars.add(c);
-			}
-	
-			// Legg til poeng for antall unike bokstaver
-			tempScore += uniqueChars.size();
-	
-			if (tempScore > maxScore) {
-				maxScore = tempScore;
-				bestWord = word;
+		// Sjekker om alle tegnene er forskjellige, kjører gjennom en for-løkke
+		for (int i = 0; i < word.length(); i++) {
+			char c = word.charAt(i);
+			if (!charSet.add(c)) {
+				return false;
 			}
 		}
 	
-		return bestWord;
+		// Alle tegnene er forskjellige
+		return true;
 	}
+    // Finn det første ordet med alle forskjellige bokstaver
+
+    public String findFirstAllDifferent() {
+        for (String word : possibleAnswers()) {
+            if (allDifferent(word)) {
+                return word;
+            }
+        }
+        return null;
+    }
+
 
 }
+	//første ordet med alle forskjellige bokstaver og høy frekvens public String findFirstHighFrequencyUniqueWord() {
+
+
+
+
+	
+
+
+
+
+
