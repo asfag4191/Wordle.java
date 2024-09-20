@@ -10,8 +10,12 @@ The runtime should be expressed using these three parameters:
 
 
 ## Task 1 - matchWord
-* `WordleAnswer::matchWord`: O(n)
-    * *Insert description of why the method has the given runtime*
+* `WordleAnswer::matchWord`: O(k)
+    * *I started by using toCharArray(), but this take O(k) time to return the result, but here we have a constant length
+    of the word so it would take O(1) time. However, I changed to charAt() because this take O(1) time. 
+    
+    I start by initializing an empty hashmap wich will take constant time, O(1), and initializing the array take O(1) time. 
+    *
 
 ## Task 2 - EliminateStrategy
 * `WordleWordList::eliminateWords`: O(?)

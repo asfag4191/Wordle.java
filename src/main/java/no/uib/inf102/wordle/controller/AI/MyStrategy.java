@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import no.uib.inf102.wordle.model.Dictionary;
+import no.uib.inf102.wordle.model.word.AnswerType;
+import no.uib.inf102.wordle.model.word.WordleCharacter;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.model.word.WordleWordList;
 
@@ -16,22 +19,23 @@ public class MyStrategy implements IStrategy {
 
     private Dictionary dictionary;
     private WordleWordList guesses;
-    private WordleWord feedback;
     private List<String> possibleAnswers;
+    private int guessCount = 0; // Teller for antall gjetninger
+
 
     public MyStrategy(Dictionary dictionary) {
         this.dictionary = dictionary;
         reset();
     }
 
-//String firstUniqueWord = guesses.findFirstAllDifferent();
-//få færre gjetninger. 
+ 
     @Override
     public String makeGuess(WordleWord feedback) {
         if (feedback == null) {
             // Velg det første ordet med alle forskjellige bokstaver
             String firstUniqueWord = BestStartGuess();
             if (firstUniqueWord != null) {
+                guessCount++;
                 return firstUniqueWord;
             }
         }
@@ -41,8 +45,15 @@ public class MyStrategy implements IStrategy {
 
         }
 
-        List<String> sortedWords = scoreWords(guesses.possibleAnswers());
-        return sortedWords.get(0); // Velger det ordet med høyest score
+        List<String> sortedWords;
+        if (guessCount >= 1) {
+            sortedWords = scoreWords(guesses.possibleAnswers()); // Hent ord sortert med laveste score
+        } else {
+            sortedWords = scoreWordsReversed(guesses.possibleAnswers()); // Hent ord sortert med høyest score
+        }
+    
+        guessCount++; // Øk gjetningstelleren for hver gang et ord velges
+        return sortedWords.get(0); // Velger det første ordet i den sorterte listen
     }
 
     @Override
@@ -91,7 +102,7 @@ public class MyStrategy implements IStrategy {
         }
         return uniqueWords;
     }
-
+//lager en liste som sorterere ordene etter score, høyeste score først. 
     private List<String> scoreWords(List<String> possibleAnswers) {
         List<HashMap<Character, Integer>> frequencyList = guesses.bestFrequency(possibleAnswers);
         HashMap<String, Integer> wordScores = new HashMap<>();
@@ -124,8 +135,34 @@ public class MyStrategy implements IStrategy {
         return sortedWords;
     }
 
-}
+    private List<String> scoreWordsReversed(List<String> possibleAnswer){
+        List<HashMap<Character, Integer>> frequencyList = guesses.bestFrequency(possibleAnswers);
+        HashMap<String, Integer> wordScores = new HashMap<>();
+        
+        //Beregner scoren for hvert ord 
+        for (String word : possibleAnswers) {
+            int score = 0;
+            for (int i = 0; i < word.length(); i++) {
+                char c = word.charAt(i);
+                score += frequencyList.get(i).getOrDefault(c, 0);
+            }
+            wordScores.put(word, score);
+        }
+        //Sorterer ordene etter deres score i stigende rekkefølge
+        List<String> sortedWords = new ArrayList<>(wordScores.keySet());
+        Collections.sort(sortedWords, new Comparator<String>() {
+            @Override
+            public int compare(String w1, String w2) {
+                int score1 = wordScores.get(w1);
+                int score2 = wordScores.get(w2);
 
+                //Sorter i stigende rekkefølge (laveste poengsum først)
+                return score1 - score2;
+            }
+        });
+        return sortedWords;
+}
+}
 
 
 

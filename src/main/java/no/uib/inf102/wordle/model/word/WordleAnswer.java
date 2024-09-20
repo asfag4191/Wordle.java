@@ -82,49 +82,40 @@ public class WordleAnswer {
      * Generates a WordleWord showing the match between <code>guess</code> and
      * <code>answer</code>
      * 
-     * @param guess
+     * @param guess 
      * @param answer
      * @return
      */
     public static WordleWord matchWord(String guess, String answer) {
-        int wordLength = answer.length();
-        if (guess.length() != wordLength)
+        int wordLength = answer.length(); //O(1)
+        if (guess.length() != wordLength) //O(1)
             throw new IllegalArgumentException("Guess and answer must have same number of letters but guess = " + guess
                     + " and answer = " + answer);
+    
+        Map<Character, Integer> map = new HashMap<>(); //O(1)
 
-        // TODO: Implement me :)
-
-        char [] ans = answer.toCharArray();
-        char [] guess_= guess.toCharArray();
-        Map<Character, Integer> map = new HashMap<>();
-
-        AnswerType[] feedback = new AnswerType[wordLength];
-
-        //builds the map of how many times each character appears in the answer
-        for (char c: ans){
-            if (map.containsKey(c)){
-                map.put(c, map.get(c)+1); //increment if already in map
-            }else{
-                map.put(c, 1); //add if not in map
+        AnswerType[] feedback = new AnswerType[wordLength]; //O(1)
+        for (int i = 0; i < wordLength; i++) { // O(k)
+            char c = answer.charAt(i); //O(1)
+            map.put(c, map.getOrDefault(c, 0) + 1); // O(1)
         }
-    }
-        for (int i = 0; i < wordLength; i++) {
+    
+        for (int i = 0; i < wordLength; i++) { // O(k)
             feedback[i] = AnswerType.WRONG;
-            if (ans[i] == guess_[i]) {
+            if (answer.charAt(i) == guess.charAt(i)) { // Bruker charAt() her også
                 feedback[i] = AnswerType.CORRECT;
-                map.put(ans[i], map.get(ans[i]) - 1); //decrement the count of the character in the answer.
-            }else{                                    //decrement to not count the same character again.
-                feedback[i] = AnswerType.WRONG; //if the character is not in the answer
+                map.put(answer.charAt(i), map.get(answer.charAt(i)) - 1); // O(1)
             }
         }
-        //if the character is in the answer but not in the correct position
-        for (int i = 0; i < wordLength; i++) { 
-            if (feedback[i] == AnswerType.WRONG && map.containsKey(guess_[i]) && map.get(guess_[i]) > 0) { //if the character is in the answer but not in the correct position.
-                feedback[i] = AnswerType.MISPLACED; 
-                map.put(guess_[i], map.get(guess_[i]) - 1); 
-
+    
+        for (int i = 0; i < wordLength; i++) { // O(k)
+            if (feedback[i] == AnswerType.WRONG && map.containsKey(guess.charAt(i)) && map.get(guess.charAt(i)) > 0) { // O(1)
+                feedback[i] = AnswerType.MISPLACED;  // O(1)
+                map.put(guess.charAt(i), map.get(guess.charAt(i)) - 1); // O(1)
             }
         }
-        return new WordleWord(guess, feedback);
+    
+        return new WordleWord(guess, feedback); 
     }
+    
 }

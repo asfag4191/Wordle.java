@@ -62,7 +62,7 @@ public class WordleWordList {
      * @param feedback the feedback to eliminate words with.
      */
     public void eliminateWords(WordleWord feedback) {
-        List<String> newPossibleAnswer = new ArrayList<>(size());
+        List<String> newPossibleAnswer = new ArrayList<>();
 
         for (String word : possibleAnswers) {
             if (WordleWord.isPossibleWord(word, feedback)) {
@@ -182,6 +182,8 @@ public class WordleWordList {
         }
         return null;
     }
+
+	
 
 
 }
