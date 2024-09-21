@@ -46,7 +46,7 @@ public class MyStrategy implements IStrategy {
         }
 
         List<String> sortedWords;
-        if (guessCount >= 1) {
+        if (guessCount >= 2) {
             sortedWords = scoreWords(guesses.possibleAnswers()); // Hent ord sortert med laveste score
         } else {
             sortedWords = scoreWordsReversed(guesses.possibleAnswers()); // Hent ord sortert med høyest score

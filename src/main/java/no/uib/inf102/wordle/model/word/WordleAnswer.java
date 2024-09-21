@@ -101,8 +101,8 @@ public class WordleAnswer {
         }
     
         for (int i = 0; i < wordLength; i++) { // O(k)
-            feedback[i] = AnswerType.WRONG;
-            if (answer.charAt(i) == guess.charAt(i)) { // Bruker charAt() her også
+            feedback[i] = AnswerType.WRONG; // O(1)
+            if (answer.charAt(i) == guess.charAt(i)) { // O(1)
                 feedback[i] = AnswerType.CORRECT;
                 map.put(answer.charAt(i), map.get(answer.charAt(i)) - 1); // O(1)
             }

@@ -18,7 +18,7 @@ public class AIPerformance {
 
     public static Dictionary dictionary = new Dictionary();
 
-    public static final int N_GAMES = 20000;
+    public static final int N_GAMES = 200;
     public static final int MAX_N_GUESSES = 20;
     static long seed = 14212l;
 
