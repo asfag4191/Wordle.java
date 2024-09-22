@@ -61,14 +61,14 @@ public class WordleWordList {
      *
      * @param feedback the feedback to eliminate words with.
      */
-    public void eliminateWords(WordleWord feedback) {
-        List<String> newPossibleAnswer = new ArrayList<>();
+    public void eliminateWords(WordleWord feedback) { //O(m*k)
+        List<String> newPossibleAnswer = new ArrayList<>(); //O(1)
 
-        for (String word : possibleAnswers) {
-            if (WordleWord.isPossibleWord(word, feedback)) {
-                newPossibleAnswer.add(word);
+        for (String word : possibleAnswers) { //O(m)
+            if (WordleWord.isPossibleWord(word, feedback)) { //O(k)
+                newPossibleAnswer.add(word); //O(1)
             }
-            possibleAnswers = newPossibleAnswer; //update the possible answers
+            possibleAnswers = newPossibleAnswer; //O(1)
         }
     }
 
@@ -100,80 +100,100 @@ public class WordleWordList {
     }
 
     /**
-     * Returns the best possible word, given the answer.
+	 * Returns the best word to guess based on the frequency of characters in the
+	 * possible answers. The best word is the one with the highest frequency of
+	 * characters. 
+	 * Count the frequeny of each character at every position across all pssoible answers,
+	 * selecting the word with the highest overall frequency score.
+	 *
+	 * @return the best word to guess.
      */
-    public String bestWord() {
-        List<HashMap<Character, Integer>> bestFrequency = bestFrequency(possibleAnswers);
+    public String bestWord() { //O(m*k)
+        List<HashMap<Character, Integer>> bestFrequency = bestFrequency(possibleAnswers); //O(m*k)
         String bestWord = "";
         int maxCount = -1;
 
-        // Find the word with the highest frequency of characters
-        for (String word : possibleAnswers) {
-            int tempCount = 0;
+        for (String word : possibleAnswers) { //O(m)
+            int tempCount = 0; //O(1)
 
-            for (int i = 0; i < wordLength(); i++) {
-                char c = word.charAt(i);
-                if (bestFrequency.get(i).containsKey(c)) {
-                    tempCount += bestFrequency.get(i).get(c);
+            for (int i = 0; i < wordLength(); i++) { //O(k)
+                char c = word.charAt(i); //O(1)
+                if (bestFrequency.get(i).containsKey(c)) { //O(1)
+                    tempCount += bestFrequency.get(i).get(c); //O(1)
                 } else {
-                    tempCount += 0;
+                    tempCount += 0; 
                 }
 
             }
 
-            // Update the best word if this word has a higher score
-            if (tempCount > maxCount) {
+            if (tempCount > maxCount) { //O(1)
                 maxCount = tempCount;
                 bestWord = word;
             }
         }
 
-        return bestWord;
+        return bestWord; //O(1)
     }
 
-    //count the number of possible words for each character
-    // holder oversikt over hvor mange ganger hver bokstav forekommer i hver posisjon
-    public List<HashMap<Character, Integer>> bestFrequency(List<String> possibleAnswers) {
-        List<HashMap<Character, Integer>> bestFrequency = new ArrayList<>();
+    /**
+     * Count the frequency of each character, at every position in the given
+     * list of possible answers. Each position in the word is represented by a
+     * HashMap, which maps each character to the number of times it occurs at
+     * that position across all words.
+     *
+     * @param possibleAnswers a list of possible answers.
+     * @return a list of HashMaps, where each HashMap maps a character to the
+     * number of times it occurs in a given position.
+     */
+    public List<HashMap<Character, Integer>> bestFrequency(List<String> possibleAnswers) { //O(m*k)
+        List<HashMap<Character, Integer>> bestFrequency = new ArrayList<>(); //O(1)
 
-        for (int i = 0; i < wordLength(); i++) {
-            bestFrequency.add(new HashMap<>());
+        for (int i = 0; i < wordLength(); i++) { //O(k)
+            bestFrequency.add(new HashMap<>()); //O(1)
         }
 
-        for (String word : possibleAnswers) {
-            for (int i = 0; i < wordLength(); i++) {
-                char c = word.charAt(i);
-                if (bestFrequency.get(i).containsKey(c)) {
-                    bestFrequency.get(i).put(c, bestFrequency.get(i).get(c) + 1);
-                } else {
-                    bestFrequency.get(i).put(c, 1);
+        for (String word : possibleAnswers) { //O(m)
+            for (int i = 0; i < wordLength(); i++) { //O(k)
+                char c = word.charAt(i); //O(1)
+                if (bestFrequency.get(i).containsKey(c)) { //O(1)
+                    bestFrequency.get(i).put(c, bestFrequency.get(i).get(c) + 1); //O(1)
+                } else { //O(1)
+                    bestFrequency.get(i).put(c, 1); //O(1)
                 }
             }
         }
 
-        return bestFrequency;
+        return bestFrequency; //O(1)
     }
 
     //koder til min Ai
 
 
-    //return true if it's all different characters in the word
-	public boolean allDifferent(String word) {
-		Set<Character> charSet = new HashSet<>(); 
-	
-		// Sjekker om alle tegnene er forskjellige, kjører gjennom en for-løkke
-		for (int i = 0; i < word.length(); i++) {
-			char c = word.charAt(i);
-			if (!charSet.add(c)) {
-				return false;
-			}
-		}
-	
-		// Alle tegnene er forskjellige
-		return true;
-	}
-    // Finn det første ordet med alle forskjellige bokstaver
+	/**
+	 * Checks if all characters in the given word are different.
+	 * @param word to check.
+	 * @return true if all characters are different, false if not.
+	 */
+    public boolean allDifferent(String word) {
+        Set<Character> charSet = new HashSet<>();
 
+        // Sjekker om alle tegnene er forskjellige, kjører gjennom en for-løkke
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            if (!charSet.add(c)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+	/**
+	 * Finds the first word in the list of possible answers that has all different
+	 * characters.
+	 * 
+	 * @return the first word with all different characters, or null if no such word is found.
+	 */
     public String findFirstAllDifferent() {
         for (String word : possibleAnswers()) {
             if (allDifferent(word)) {
@@ -183,18 +203,6 @@ public class WordleWordList {
         return null;
     }
 
-	
-
-
 }
-	//første ordet med alle forskjellige bokstaver og høy frekvens public String findFirstHighFrequencyUniqueWord() {
-
-
-
-
-	
-
-
-
 
 

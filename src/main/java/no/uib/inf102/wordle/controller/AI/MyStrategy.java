@@ -32,21 +32,19 @@ public class MyStrategy implements IStrategy {
     @Override
     public String makeGuess(WordleWord feedback) {
         if (feedback == null) {
-            // Velg det første ordet med alle forskjellige bokstaver
             String firstUniqueWord = BestStartGuess();
             if (firstUniqueWord != null) {
                 guessCount++;
                 return firstUniqueWord;
             }
         }
-        // Hvis det ikke er det første gjettet, eller ingen unike ord ble funnet, bruk frekvensmetoden
         if (feedback != null) {
             guesses.eliminateWords(feedback);
 
         }
 
         List<String> sortedWords;
-        if (guessCount >= 2) {
+        if (guessCount >= 1) {
             sortedWords = scoreWords(guesses.possibleAnswers()); // Hent ord sortert med laveste score
         } else {
             sortedWords = scoreWordsReversed(guesses.possibleAnswers()); // Hent ord sortert med høyest score
