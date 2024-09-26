@@ -18,7 +18,7 @@ public class AIPerformance {
 
     public static Dictionary dictionary = new Dictionary();
 
-    public static final int N_GAMES = 20000;
+    public static final int N_GAMES = 200;
     public static final int MAX_N_GUESSES = 20;
     static long seed = 14212l;
 
@@ -64,7 +64,7 @@ public class AIPerformance {
         String strategyName = strategy.getClass().getSimpleName();
         AIStatistics stats = new AIStatistics(strategyName);
         //set a seed so that all strategies are given the same set of words
-        Random rnd = new Random(seed);
+        Random rnd = new Random();
 
         for (int i = 0; i < N_GAMES; i++) {
             try {

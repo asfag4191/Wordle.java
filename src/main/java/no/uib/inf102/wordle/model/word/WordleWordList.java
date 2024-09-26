@@ -3,9 +3,7 @@ package no.uib.inf102.wordle.model.word;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import no.uib.inf102.wordle.model.Dictionary;
 
@@ -164,43 +162,6 @@ public class WordleWordList {
         }
 
         return bestFrequency; //O(1)
-    }
-
-    //koder til min Ai
-
-
-	/**
-	 * Checks if all characters in the given word are different.
-	 * @param word to check.
-	 * @return true if all characters are different, false if not.
-	 */
-    public boolean allDifferent(String word) {
-        Set<Character> charSet = new HashSet<>();
-
-        // Sjekker om alle tegnene er forskjellige, kjører gjennom en for-løkke
-        for (int i = 0; i < word.length(); i++) {
-            char c = word.charAt(i);
-            if (!charSet.add(c)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-	/**
-	 * Finds the first word in the list of possible answers that has all different
-	 * characters.
-	 * 
-	 * @return the first word with all different characters, or null if no such word is found.
-	 */
-    public String findFirstAllDifferent() {
-        for (String word : possibleAnswers()) {
-            if (allDifferent(word)) {
-                return word;
-            }
-        }
-        return null;
     }
 
 }

@@ -62,7 +62,7 @@ The runtime should be expressed using these three parameters:
     1. Invoking eliminatewords which takes O(m*k) time
     2. Calling bestWord, evaluates the best word based on frequenzy,  O(m*k) time. 
 
-    The overall time complexity is O(m*k)+O(m*k)=O(m*k)
+    The overall time complexity is O(m*k)+O(m*k)=O(m*k). We can also here argue that the overall runtime is O(m), because k is constant. 
     *
 
 
@@ -71,4 +71,9 @@ The runtime should be expressed using these three parameters:
 For this task you do not need to give a runtime analysis. 
 Instead, you must explain your code. What was your idea for getting a better result? What is your strategy?
 
-*Write your answer here*
+*WI was a little stuch when I started, so I started with just returning the first word with all different characters. However, it were not that good because I also needed to implement the frequenzy for each character. Therefore I made a function for the best starting guess. 
+My best first guess has its own method, just to so the code is easier to look at. It start by finding all words that has different characters, then it calculate the best frequenzy. This also returns a map where, that represents frequenzy character at each position. Then lastly I uses the findbestWord, that will collect the word with highest score based on character frequenzies.
+
+The I saw it had many guesses still, so I thought of a way by calculating the score for each word. I thought that if my first word was the word with highest frequenzy and the most 'normal' characters used, I could use the score in the opposite way. First I just made a list of the score for each word high to low, but this had still many guesses. Then I saw that I could use it in the opposite direction, to remove "edge" cases much faster. This made my code always have less guesses, 5.595 on the seed and always less guesses otherwise. 
+
+Also I implemented javadoc on all my code, still if it was private, just to explain the code and how I have thought in MyStrategy as well, hope this is okey.   *

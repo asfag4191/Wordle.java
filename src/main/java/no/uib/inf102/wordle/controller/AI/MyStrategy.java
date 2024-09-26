@@ -6,29 +6,24 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import no.uib.inf102.wordle.model.Dictionary;
-import no.uib.inf102.wordle.model.word.AnswerType;
-import no.uib.inf102.wordle.model.word.WordleCharacter;
 import no.uib.inf102.wordle.model.word.WordleWord;
 import no.uib.inf102.wordle.model.word.WordleWordList;
-
-;
 
 public class MyStrategy implements IStrategy {
 
     private Dictionary dictionary;
     private WordleWordList guesses;
     private List<String> possibleAnswers;
-    private int guessCount = 0; // Teller for antall gjetninger
-
+    private int guessCount = 0;
 
     public MyStrategy(Dictionary dictionary) {
         this.dictionary = dictionary;
         reset();
     }
 
- 
     @Override
     public String makeGuess(WordleWord feedback) {
         if (feedback == null) {
@@ -45,13 +40,15 @@ public class MyStrategy implements IStrategy {
 
         List<String> sortedWords;
         if (guessCount >= 1) {
-            sortedWords = scoreWords(guesses.possibleAnswers()); // Hent ord sortert med laveste score
+            sortedWords = scoreWords(guesses.possibleAnswers());
+        } else if (guessCount == 2) {
+            sortedWords = scoreWordsReversed(guesses.possibleAnswers());
         } else {
-            sortedWords = scoreWordsReversed(guesses.possibleAnswers()); // Hent ord sortert med høyest score
+            sortedWords = scoreWords(guesses.possibleAnswers());
         }
-    
-        guessCount++; // Øk gjetningstelleren for hver gang et ord velges
-        return sortedWords.get(0); // Velger det første ordet i den sorterte listen
+
+        guessCount++;
+        return sortedWords.get(0);
     }
 
     @Override
@@ -61,14 +58,31 @@ public class MyStrategy implements IStrategy {
 
     }
 
+    /**
+     * Finds the best word to start with. The best word is the one with the
+     * highest score based on the frequency of characters in the possible
+     * answers, and all unique characters.
+     *
+     * @return the best word to start with.
+     */
     private String BestStartGuess() {
         List<String> uniqueWords = UniqueCharacter(possibleAnswers);
         List<HashMap<Character, Integer>> frequencyList = guesses.bestFrequency(uniqueWords);
         return findBestWord(uniqueWords, frequencyList);
     }
 
-    // Helper method to find the best word based on the frequency list
+    /**
+     * Calculates a score for each word based on the frequency of characters in
+     * the possible answers. The best word is the one with the highest score.
+     * Method used for BestStartGuess.
+     *
+     * @param words the list of words to choose from.
+     * @param frequencyList list of HashMaps where each HashMap contains the
+     * frequency of characters at each position.
+     */
+    /* */
     private String findBestWord(List<String> words, List<HashMap<Character, Integer>> frequencyList) {
+
         String bestWord = "";
         int maxScore = -1;
 
@@ -80,7 +94,6 @@ public class MyStrategy implements IStrategy {
                 tempCount += frequencyList.get(i).getOrDefault(c, 0);
             }
 
-            // Update the best word if this word has a higher score
             if (tempCount > maxScore) {
                 maxScore = tempCount;
                 bestWord = word;
@@ -90,22 +103,33 @@ public class MyStrategy implements IStrategy {
         return bestWord;
     }
 
-//lager en liste med ord som har forskjellige bokstaver og bruker denne 
+    /**
+     * Creates a list with all the words that have unique characters.
+     *
+     * @param possibleAnswers the list of possible answers.
+     * @return a list of words with unique characters.
+     */
     private List<String> UniqueCharacter(List<String> possibleAnswers) {
         List<String> uniqueWords = new ArrayList<>();
         for (String word : possibleAnswers) {
-            if (guesses.allDifferent(word)) {
+            if (allDifferent(word)) {
                 uniqueWords.add(word);
             }
         }
         return uniqueWords;
     }
-//lager en liste som sorterere ordene etter score, høyeste score først. 
+
+    /**
+     * Sort the word list based on the frequency of characters in the possible
+     * answers. The best word is the one with the highest score.
+     *
+     * @param possibleAnswers the list of possible answers.
+     * @return a list of words sorted by their score. Highest score first.
+     */
     private List<String> scoreWords(List<String> possibleAnswers) {
         List<HashMap<Character, Integer>> frequencyList = guesses.bestFrequency(possibleAnswers);
         HashMap<String, Integer> wordScores = new HashMap<>();
 
-        // Beregn score for hvert ord
         for (String word : possibleAnswers) {
             int score = 0;
             for (int i = 0; i < word.length(); i++) {
@@ -115,17 +139,14 @@ public class MyStrategy implements IStrategy {
             wordScores.put(word, score);
         }
 
-        // Sorter ordene etter deres score i synkende rekkefølge
         List<String> sortedWords = new ArrayList<>(wordScores.keySet());
         Collections.sort(sortedWords, new Comparator<String>() {
-           
+
             @Override
             public int compare(String w1, String w2) {
-                // Få poengsummen for hvert ord
                 int score1 = wordScores.get(w1);
                 int score2 = wordScores.get(w2);
 
-                // Sorter i synkende rekkefølge (høyeste poengsum først)
                 return score2 - score1;
             }
         });
@@ -133,11 +154,17 @@ public class MyStrategy implements IStrategy {
         return sortedWords;
     }
 
-    private List<String> scoreWordsReversed(List<String> possibleAnswer){
+    /**
+     * Sort the word list based on the frequency of characters in the possible
+     * answers. The best word is the one with the highest score.
+     *
+     * @param possibleAnswers the list of possible answers.
+     * @return a list of words sorted by their score. Lowest score first.
+     */
+    private List<String> scoreWordsReversed(List<String> possibleAnswer) {
         List<HashMap<Character, Integer>> frequencyList = guesses.bestFrequency(possibleAnswers);
         HashMap<String, Integer> wordScores = new HashMap<>();
-        
-        //Beregner scoren for hvert ord 
+
         for (String word : possibleAnswers) {
             int score = 0;
             for (int i = 0; i < word.length(); i++) {
@@ -146,7 +173,6 @@ public class MyStrategy implements IStrategy {
             }
             wordScores.put(word, score);
         }
-        //Sorterer ordene etter deres score i stigende rekkefølge
         List<String> sortedWords = new ArrayList<>(wordScores.keySet());
         Collections.sort(sortedWords, new Comparator<String>() {
             @Override
@@ -154,46 +180,29 @@ public class MyStrategy implements IStrategy {
                 int score1 = wordScores.get(w1);
                 int score2 = wordScores.get(w2);
 
-                //Sorter i stigende rekkefølge (laveste poengsum først)
                 return score1 - score2;
             }
         });
         return sortedWords;
-}
-}
-
-
-
-
-
-
-
-
-   /*  private String getFirstUniqueWord() {
-        String bestWord=null;
-        int highestScore=-1;
-
-        List<HashMap<Character, Integer>> frequencyList = guesses.bestFrequency(possibleAnswers);
-        for (String word : possibleAnswers) {
-            if (guesses.allDifferent(word)) { // Bruker allDifferent fra guesses
-                int score = calculateWordScore(word, frequencyList);
-                if (score > highestScore) {
-                    highestScore = score;
-                    bestWord = word;
-                }
-            }
-        }
-        return bestWord;
     }
 
-    private int calculateWordScore(String word, List<HashMap<Character, Integer>> frequencyList) {
-        int score = 0;
+    /**
+     * Checks if all characters in the given word are different.
+     *
+     * @param word to check.
+     * @return true if all characters are different, false if not.
+     */
+    private boolean allDifferent(String word) {
+        Set<Character> charSet = new HashSet<>();
+
         for (int i = 0; i < word.length(); i++) {
             char c = word.charAt(i);
-            score += frequencyList.get(i).get(c);
+            if (!charSet.add(c)) {
+                return false;
+            }
         }
-        return score;
 
+        return true;
     }
 
-} */
+}
