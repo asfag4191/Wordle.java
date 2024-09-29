@@ -64,7 +64,7 @@ public class AIPerformance {
         String strategyName = strategy.getClass().getSimpleName();
         AIStatistics stats = new AIStatistics(strategyName);
         //set a seed so that all strategies are given the same set of words
-        Random rnd = new Random();
+        Random rnd = new Random(seed);
 
         for (int i = 0; i < N_GAMES; i++) {
             try {

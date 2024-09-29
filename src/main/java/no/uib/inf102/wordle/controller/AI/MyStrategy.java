@@ -39,13 +39,7 @@ public class MyStrategy implements IStrategy {
         }
 
         List<String> sortedWords;
-        if (guessCount >= 1) {
-            sortedWords = scoreWords(guesses.possibleAnswers());
-        } else if (guessCount == 2) {
-            sortedWords = scoreWordsReversed(guesses.possibleAnswers());
-        } else {
-            sortedWords = scoreWords(guesses.possibleAnswers());
-        }
+        sortedWords = scoreWords(guesses.possibleAnswers());
 
         guessCount++;
         return sortedWords.get(0);
@@ -80,7 +74,6 @@ public class MyStrategy implements IStrategy {
      * @param frequencyList list of HashMaps where each HashMap contains the
      * frequency of characters at each position.
      */
-    /* */
     private String findBestWord(List<String> words, List<HashMap<Character, Integer>> frequencyList) {
 
         String bestWord = "";
@@ -155,38 +148,6 @@ public class MyStrategy implements IStrategy {
     }
 
     /**
-     * Sort the word list based on the frequency of characters in the possible
-     * answers. The best word is the one with the highest score.
-     *
-     * @param possibleAnswers the list of possible answers.
-     * @return a list of words sorted by their score. Lowest score first.
-     */
-    private List<String> scoreWordsReversed(List<String> possibleAnswer) {
-        List<HashMap<Character, Integer>> frequencyList = guesses.bestFrequency(possibleAnswers);
-        HashMap<String, Integer> wordScores = new HashMap<>();
-
-        for (String word : possibleAnswers) {
-            int score = 0;
-            for (int i = 0; i < word.length(); i++) {
-                char c = word.charAt(i);
-                score += frequencyList.get(i).getOrDefault(c, 0);
-            }
-            wordScores.put(word, score);
-        }
-        List<String> sortedWords = new ArrayList<>(wordScores.keySet());
-        Collections.sort(sortedWords, new Comparator<String>() {
-            @Override
-            public int compare(String w1, String w2) {
-                int score1 = wordScores.get(w1);
-                int score2 = wordScores.get(w2);
-
-                return score1 - score2;
-            }
-        });
-        return sortedWords;
-    }
-
-    /**
      * Checks if all characters in the given word are different.
      *
      * @param word to check.
@@ -204,5 +165,4 @@ public class MyStrategy implements IStrategy {
 
         return true;
     }
-
 }
